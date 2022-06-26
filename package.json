@@ -21,6 +21,8 @@
     "prettier": "^2.6.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-imask": "^6.4.2",
+    "react-input-mask": "^2.0.4",
     "react-scripts": "5.0.1",
     "sass": "^1.53.0",
     "sass-loader": "^13.0.1",
@@ -52,6 +54,7 @@
     ]
   },
   "devDependencies": {
+    "@types/react-input-mask": "^3.0.1",
     "typed-scss-modules": "^6.5.0"
   }
 }
