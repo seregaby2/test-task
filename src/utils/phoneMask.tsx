@@ -16,8 +16,7 @@ const TextMaskCustom = React.forwardRef<HTMLElement, CustomProps>(function TextM
   return (
     <IMaskInput
       {...other}
-      mask="+7(000) 000-00-00"
-      //   inputRef={ref}
+      mask="+7(000)-000-00-00"
       onAccept={(value: any) => onChange({ target: { name: props.name, value } })}
       overwrite
     />
@@ -31,11 +30,12 @@ interface State {
 
 interface myProps {
   handlePhone(inputValue: string): void;
+  errorMessage: string;
 }
 
 export const FormattedInputs = (props: myProps) => {
   const [values, setValues] = React.useState<State>({
-    textmask: '+7(000) 000-00-00',
+    textmask: '+7(000)-000-00-00',
     numberformat: '1320',
   });
 
@@ -44,8 +44,7 @@ export const FormattedInputs = (props: myProps) => {
       ...values,
       [event.target.name]: event.target.value,
     });
-    // console.log(event.target.value, 'value');
-    props.handlePhone(event.target.value);
+    if (event.target.value !== '+7(000)-000-00-00') props.handlePhone(event.target.value);
   };
 
   return (
@@ -54,8 +53,9 @@ export const FormattedInputs = (props: myProps) => {
       size="small"
       margin="normal"
       fullWidth
-      error={false}
-      helperText={'error'}
+      placeholder="+7(000)-000-00-00"
+      error={Boolean(props.errorMessage)}
+      helperText={props.errorMessage}
       InputLabelProps={{ shrink: true }}
       FormHelperTextProps={{
         style: {

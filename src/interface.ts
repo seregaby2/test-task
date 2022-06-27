@@ -5,3 +5,15 @@ export interface form {
   date: string;
   text: string;
 }
+
+export interface error {
+  nameError: string;
+  emailError: string;
+  phoneError: string;
+  dateError: string;
+  textError: string;
+}
+
+export interface response {
+  message: string;
+}

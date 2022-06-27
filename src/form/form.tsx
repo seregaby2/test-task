@@ -1,14 +1,27 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Typography from '@mui/material/Typography';
 import { Button, TextField } from '@mui/material';
-import { form } from '../interface';
-import { useRef } from 'react';
-import { IMaskInput } from 'react-imask';
-
-import './style.scss';
+import { form, error } from '../interface';
 import { FormattedInputs } from '../utils/phoneMask';
+import './style.scss';
+import {
+  dateValidation,
+  nameValidation,
+  phoneValidation,
+  textValidation,
+  validateEmail,
+} from '../utils/validation';
+import { apiRequest } from './api/request';
 
 export function Form() {
+  const initialError = {
+    nameError: '',
+    emailError: '',
+    phoneError: '',
+    dateError: '',
+    textError: '',
+  };
+
   const initialValue = {
     name: '',
     email: '',
@@ -17,9 +30,16 @@ export function Form() {
     text: '',
   };
 
-  const ref = useRef(null);
-
   const [form, setForm] = useState<form>(initialValue);
+  const [error, setError] = useState<error>(initialError);
+
+  useEffect(() => {
+    if (form.name !== '') handleErrorName();
+    if (form.email !== '') handleErrorEmail();
+    if (form.text !== '') handleErrorText();
+    if (form.phone !== '') handleErrorPhone();
+    console.log('error');
+  }, [form.name, form.email, form.text, form.phone]);
 
   const handleName = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, name: e.currentTarget.value });
@@ -35,18 +55,42 @@ export function Form() {
 
   const handlePhone = (inputValue: string) => {
     setForm({ ...form, phone: inputValue });
+    handleErrorPhone();
   };
-
-  //   const tmp = (phone: string) => {
-  //     console.log(phone);
-  //   };
 
   const handleText = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, text: e.currentTarget.value });
   };
 
+  const handleErrorName = () => {
+    const errorName = nameValidation(form.name);
+    setError((error) => ({ ...error, nameError: errorName }));
+  };
+
+  const handleErrorEmail = () => {
+    const errorEmail = validateEmail(form.email);
+    setError((error) => ({ ...error, emailError: errorEmail }));
+  };
+
+  const handleErrorText = () => {
+    const errorText = textValidation(form.text);
+    setError((error) => ({ ...error, textError: errorText }));
+  };
+
+  const handleErrorPhone = () => {
+    const errorPhone = phoneValidation(form.phone);
+    setError((error) => ({ ...error, phoneError: errorPhone }));
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    apiRequest(form);
+    handleErrorName();
+    handleErrorEmail();
+    handleErrorText();
+    handleErrorPhone();
+
     setForm({
       name: '',
       email: '',
@@ -54,7 +98,6 @@ export function Form() {
       date: '',
       text: '',
     });
-    console.log(form);
   };
 
   return (
@@ -75,13 +118,14 @@ export function Form() {
           fullWidth
           placeholder="Ivan Ivanov"
           onChange={handleName}
-          value={form.name}
-          error={false}
-          helperText={'error'}
+          value={form.name.toUpperCase()}
+          error={Boolean(error.nameError)}
+          helperText={error.nameError}
           FormHelperTextProps={{
             style: {
               position: 'absolute',
               top: '35px',
+              marginRight: '4px',
             },
           }}
         />
@@ -92,8 +136,8 @@ export function Form() {
           fullWidth
           onChange={handleMail}
           value={form.email}
-          error={false}
-          helperText={'error'}
+          error={Boolean(error.emailError)}
+          helperText={error.emailError}
           FormHelperTextProps={{
             style: {
               position: 'absolute',
@@ -101,7 +145,7 @@ export function Form() {
             },
           }}
         />
-        <FormattedInputs handlePhone={handlePhone} />
+        <FormattedInputs handlePhone={handlePhone} errorMessage={error.phoneError} />
         <TextField
           type="date"
           label={'date'}
@@ -110,9 +154,9 @@ export function Form() {
           fullWidth
           onChange={handleDate}
           value={form.date}
-          error={false}
+          error={Boolean(error.dateError)}
           InputLabelProps={{ shrink: true }}
-          helperText={'error'}
+          helperText={error.dateError}
           FormHelperTextProps={{
             style: {
               position: 'absolute',
@@ -123,14 +167,14 @@ export function Form() {
         <TextField
           multiline
           rows={4}
-          label={'text'}
+          label={'message'}
           size="small"
           margin="normal"
           fullWidth
           onChange={handleText}
           value={form.text}
-          error={false}
-          helperText={'error'}
+          error={Boolean(error.textError)}
+          helperText={error.textError}
           FormHelperTextProps={{
             style: {
               position: 'absolute',
