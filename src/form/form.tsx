@@ -38,7 +38,6 @@ export function Form() {
     if (form.email !== '') handleErrorEmail();
     if (form.text !== '') handleErrorText();
     if (form.phone !== '') handleErrorPhone();
-    console.log('error');
   }, [form.name, form.email, form.text, form.phone]);
 
   const handleName = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -82,10 +81,10 @@ export function Form() {
     setError((error) => ({ ...error, phoneError: errorPhone }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    apiRequest(form);
+    await apiRequest(form);
     handleErrorName();
     handleErrorEmail();
     handleErrorText();
