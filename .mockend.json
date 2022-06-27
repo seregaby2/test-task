@@ -1,9 +1,9 @@
 {
     "User": {
-      "name": { "string": {} },
-      "email": { "string": {} },
-      "date": { "string": {} },
-      "phone": { "string": {} },
-      "text": { "string": {} }
+      "name": "",
+      "email": "",
+      "date": "",
+      "phone": "",
+      "text": ""
     }
   }
