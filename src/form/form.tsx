@@ -84,7 +84,7 @@ export function Form() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    await apiRequest(form);
+    await apiRequest();
     handleErrorName();
     handleErrorEmail();
     handleErrorText();
